@@ -6,6 +6,7 @@
     <title>玉簪植物形态学数据库 - 国家植物园</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* 样式保持不变 */
         * {
             margin: 0;
             padding: 0;
@@ -114,7 +115,7 @@
         
         .plant-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(4, 1fr); /* 每行4个卡片 */
             gap: 1.5rem;
         }
         
@@ -278,6 +279,27 @@
             width: 100%;
         }
         
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.07);
+        }
+        
+        @media (max-width: 1200px) {
+            .plant-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .plant-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
         @media (max-width: 768px) {
             .plant-grid {
                 grid-template-columns: 1fr;
@@ -341,13 +363,11 @@
             </div>
             
             <div class="filter-group">
-                <label for="flower-color">花色</label>
-                <select id="flower-color">
-                    <option value="all">全部颜色</option>
-                    <option value="白色">白色</option>
-                    <option value="紫色">紫色</option>
-                    <option value="淡紫色">淡紫色</option>
-                    <option value="粉色">粉色</option>
+                <label for="fragrance-filter">香味</label>
+                <select id="fragrance-filter">
+                    <option value="all">全部</option>
+                    <option value="有">有香味</option>
+                    <option value="无">无香味</option>
                 </select>
             </div>
             
@@ -359,6 +379,9 @@
         
         <div class="plant-grid" id="plant-container">
             <!-- 植物卡片将通过JavaScript动态生成 -->
+            <div class="no-results">
+                <p>数据库为空，请添加数据或连接数据源</p>
+            </div>
         </div>
         
         <div class="pagination" id="pagination">
@@ -379,88 +402,88 @@
     </footer>
 
     <script>
-        // 数据 - 100+品种数据
+        // 空数据数组
         const hostaVarieties = [
-             {
-   "id": 1,
-   "chineseName": "[爱尔兰好运]玉簪",
-   "englishName": "Hosta 'Irish Luck'",
-   "height": 55,
-   "spread": 69,
-   "growthHabit": "直立",
-   "petioleLength": 35,
-   "petioleColor": "Fan3.146A",
-   "leafLength": 23,
-   "leafWidth": 10,
-   "leafShape": "椭圆形",
-   "leafColor": "Fan3.NN137A",
-   "veinCount": "少",
-   "wrinkleLevel": "弱",
-   "blisterLevel": "无 ",
-   "wavyMargin": "弱",
-   "twistLevel": "无 ",
-   "hasPowder": "无 ",
-   "scapeLength": 75,
-   "scapeColor": "Fan3.144B",
-   "flowerCount": 18,
-   "hasFragrance": "有",
-   "hasBract": "有",
-   "bractColor": "144A",
-   "bractSize": "",
-   "pedicelLength": "0.4",
-   "pedicelColor": "76A",
-   "flowerLength": 6.3,
-   "flowerWidth": "4",
-   "lobeLength": "4",
-   "lobeWidth": 1.5,
-   "tubeLength": 2.4,
-   "flowerType": "_状",
-   "petalType": "单瓣",
-   "outerLobeColor": "84D",
-   "innerLobeColor": "84D",
-   "antherColor": "8A",
-   "bloomStart": "7月25日-9月1日"
- },
- {
-   "id": 2,
-   "chineseName": "[爱尔兰好运]玉簪",
-   "englishName": "Hosta 'Irish Luck'",
-   "height": 48,
-   "spread": 62,
-   "growthHabit": "直立",
-   "petioleLength": 34,
-   "petioleColor": "Fan3.146A",
-   "leafLength": 23,
-   "leafWidth": 11,
-   "leafShape": "椭圆形",
-   "leafColor": "Fan3.NN137A",
-   "veinCount": "少",
-   "wrinkleLevel": "弱",
-   "blisterLevel": "无 ",
-   "wavyMargin": "弱",
-   "twistLevel": "无 ",
-   "hasPowder": "无 ",
-   "scapeLength": 69,
-   "scapeColor": "Fan3.144B",
-   "flowerCount": 16,
-   "hasFragrance": "有",
-   "hasBract": "有",
-   "bractColor": "144A",
-   "bractSize": "",
-   "pedicelLength": "0.3",
-   "pedicelColor": "76A",
-   "flowerLength": 6,
-   "flowerWidth": "4.8",
-   "lobeLength": "3.5",
-   "lobeWidth": 1.7,
-   "tubeLength": 2.4,
-   "flowerType": "_状",
-   "petalType": "单瓣",
-   "outerLobeColor": "84D",
-   "innerLobeColor": "84D",
-   "antherColor": "8A",
-   "bloomStart": "7月25日-9月1日"
- },
+            {
+                "id": 1,
+                "chineseName": "[爱尔兰好运]玉簪",
+                "englishName": "Hosta 'Irish Luck'",
+                "height": 55,
+                "spread": 69,
+                "growthHabit": "直立",
+                "petioleLength": 35,
+                "petioleColor": "Fan3.146A",
+                "leafLength": 23,
+                "leafWidth": 10,
+                "leafShape": "椭圆形",
+                "leafColor": "Fan3.NN137A",
+                "veinCount": "少",
+                "wrinkleLevel": "弱",
+                "blisterLevel": "无 ",
+                "wavyMargin": "弱",
+                "twistLevel": "无 ",
+                "hasPowder": "无 ",
+                "scapeLength": 75,
+                "scapeColor": "Fan3.144B",
+                "flowerCount": 18,
+                "hasFragrance": "有",
+                "hasBract": "有",
+                "bractColor": "144A",
+                "bractSize": "",
+                "pedicelLength": "0.4",
+                "pedicelColor": "76A",
+                "flowerLength": 6.3,
+                "flowerWidth": "4",
+                "lobeLength": "4",
+                "lobeWidth": 1.5,
+                "tubeLength": 2.4,
+                "flowerType": "_状",
+                "petalType": "单瓣",
+                "outerLobeColor": "84D",
+                "innerLobeColor": "84D",
+                "antherColor": "8A",
+                "bloomStart": "7月25日-9月1日"
+            },
+            {
+                "id": 2,
+                "chineseName": "[爱尔兰好运]玉簪",
+                "englishName": "Hosta 'Irish Luck'",
+                "height": 48,
+                "spread": 62,
+                "growthHabit": "直立",
+                "petioleLength": 34,
+                "petioleColor": "Fan3.146A",
+                "leafLength": 23,
+                "leafWidth": 11,
+                "leafShape": "椭圆形",
+                "leafColor": "Fan3.NN137A",
+                "veinCount": "少",
+                "wrinkleLevel": "弱",
+                "blisterLevel": "无 ",
+                "wavyMargin": "弱",
+                "twistLevel": "无 ",
+                "hasPowder": "无 ",
+                "scapeLength": 69,
+                "scapeColor": "Fan3.144B",
+                "flowerCount": 16,
+                "hasFragrance": "有",
+                "hasBract": "有",
+                "bractColor": "144A",
+                "bractSize": "",
+                "pedicelLength": "0.3",
+                "pedicelColor": "76A",
+                "flowerLength": 6,
+                "flowerWidth": "4.8",
+                "lobeLength": "3.5",
+                "lobeWidth": 1.7,
+                "tubeLength": 2.4,
+                "flowerType": "_状",
+                "petalType": "单瓣",
+                "outerLobeColor": "84D",
+                "innerLobeColor": "84D",
+                "antherColor": "8A",
+                "bloomStart": "7月25日-9月1日"
+            },
  {
    "id": 3,
    "chineseName": "[爱尔兰好运]玉簪",
@@ -9381,61 +9404,17 @@
    "antherColor": "173A",
    "bloomStart": "6月25日-7月25日"
  },
-            // 您可以在这里添加更多品种数据...
-            // 格式按照上面的示例，包含所有字段
-        ];
+            // 这里可以添加更多数据
+];
 
         // 初始化变量
         let currentPage = 1;
-        const itemsPerPage = 9;
+        const itemsPerPage = 12; // 每页12个卡片 (3行 x 4个)
         let filteredVarieties = [...hostaVarieties];
+        let currentPageVarieties = []; // 存储当前页面的品种
 
         // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {
-            // 添加更多测试数据
-            for (let i = 2; i <= 50; i++) {
-                hostaVarieties.push({
-                    id: i,
-                    chineseName: `玉簪品种 ${i}`,
-                    englishName: `Hosta 'Variety ${i}'`,
-                    height: Math.floor(Math.random() * 60) + 20,
-                    spread: Math.floor(Math.random() * 100) + 40,
-                    growthHabit: ["直立", "圆丛", "匍匐"][Math.floor(Math.random() * 3)],
-                    petioleLength: Math.floor(Math.random() * 30) + 15,
-                    petioleColor: `Fan3.${Math.floor(Math.random() * 150)}A`,
-                    leafLength: Math.floor(Math.random() * 25) + 10,
-                    leafWidth: Math.floor(Math.random() * 20) + 8,
-                    leafShape: ["披针形", "椭圆形", "卵形", "阔卵形", "近圆形"][Math.floor(Math.random() * 5)],
-                    leafColor: `Fan3.${Math.floor(Math.random() * 150)}B`,
-                    veinCount: ["少", "中", "多"][Math.floor(Math.random() * 3)],
-                    wrinkleLevel: ["无", "弱", "中", "强", "极强"][Math.floor(Math.random() * 5)],
-                    blisterLevel: ["无", "弱", "中", "强"][Math.floor(Math.random() * 4)],
-                    wavyMargin: ["无", "弱", "中", "强"][Math.floor(Math.random() * 4)],
-                    twistLevel: ["无", "弱", "中", "强"][Math.floor(Math.random() * 4)],
-                    hasPowder: ["是", "否"][Math.floor(Math.random() * 2)],
-                    scapeLength: Math.floor(Math.random() * 80) + 40,
-                    scapeColor: ["绿色", "紫绿色", "褐色"][Math.floor(Math.random() * 3)],
-                    flowerCount: `${Math.floor(Math.random() * 30) + 10}`,
-                    hasFragrance: ["是", "否"][Math.floor(Math.random() * 2)],
-                    hasBract: ["是", "否"][Math.floor(Math.random() * 2)],
-                    bractColor: "绿色",
-                    bractSize: `${(Math.random() * 3 + 1).toFixed(1)}×${(Math.random() * 1.5 + 0.5).toFixed(1)}cm`,
-                    pedicelLength: Math.random() * 2 + 0.5,
-                    pedicelColor: `Fan3.${Math.floor(Math.random() * 150)}C`,
-                    flowerLength: Math.random() * 3 + 4,
-                    flowerWidth: Math.random() * 2 + 2,
-                    lobeLength: Math.random() * 2 + 3,
-                    lobeWidth: Math.random() + 0.8,
-                    tubeLength: Math.random() * 1.5 + 1,
-                    flowerType: ["管状", "鈡状", "漏斗状", "喇叭状", "蜘蛛花状"][Math.floor(Math.random() * 5)],
-                    petalType: ["单瓣", "重瓣"][Math.floor(Math.random() * 2)],
-                    outerLobeColor: ["白色", "淡紫色", "紫色", "粉色"][Math.floor(Math.random() * 4)],
-                    innerLobeColor: ["白色", "淡紫色", "紫色"][Math.floor(Math.random() * 3)],
-                    antherColor: ["紫色", "黄色", "褐色"][Math.floor(Math.random() * 3)],
-                    bloomStart: `${Math.floor(Math.random() * 3) + 6}月中旬`
-                });
-            }
-
             filteredVarieties = [...hostaVarieties];
             updateResultsCount();
             renderPlants();
@@ -9446,7 +9425,7 @@
         function setupEventListeners() {
             document.getElementById('height-filter').addEventListener('change', filterPlants);
             document.getElementById('leaf-shape').addEventListener('change', filterPlants);
-            document.getElementById('flower-color').addEventListener('change', filterPlants);
+            document.getElementById('fragrance-filter').addEventListener('change', filterPlants);
             document.getElementById('search').addEventListener('input', filterPlants);
             document.getElementById('close-modal').addEventListener('click', closeModal);
             
@@ -9460,7 +9439,7 @@
         function filterPlants() {
             const heightFilter = document.getElementById('height-filter').value;
             const leafShapeFilter = document.getElementById('leaf-shape').value;
-            const flowerColorFilter = document.getElementById('flower-color').value;
+            const fragranceFilter = document.getElementById('fragrance-filter').value;
             const searchText = document.getElementById('search').value.toLowerCase();
             
             filteredVarieties = hostaVarieties.filter(plant => {
@@ -9478,8 +9457,8 @@
                     return false;
                 }
                 
-                // 花色筛选
-                if (flowerColorFilter !== 'all' && plant.outerLobeColor !== flowerColorFilter) {
+                // 香味筛选
+                if (fragranceFilter !== 'all' && plant.hasFragrance !== fragranceFilter) {
                     return false;
                 }
                 
@@ -9498,10 +9477,31 @@
             renderPlants();
         }
 
+        // 获取唯一品种数量
+        function getUniqueVarietiesCount() {
+            const uniqueNames = new Set();
+            hostaVarieties.forEach(plant => {
+                uniqueNames.add(plant.chineseName);
+            });
+            return uniqueNames.size;
+        }
+
         // 更新结果计数
         function updateResultsCount() {
-            document.getElementById('showing-count').textContent = filteredVarieties.length;
-            document.getElementById('total-count').textContent = hostaVarieties.length;
+            // 获取当前页面的唯一品种数
+            const currentPageUniqueNames = new Set();
+            currentPageVarieties.forEach(plant => {
+                currentPageUniqueNames.add(plant.chineseName);
+            });
+            
+            // 获取总品种数
+            const totalUniqueNames = new Set();
+            filteredVarieties.forEach(plant => {
+                totalUniqueNames.add(plant.chineseName);
+            });
+            
+            document.getElementById('showing-count').textContent = currentPageUniqueNames.size;
+            document.getElementById('total-count').textContent = totalUniqueNames.size;
         }
 
         // 渲染植物列表
@@ -9513,21 +9513,25 @@
             container.innerHTML = '';
             pagination.innerHTML = '';
             
-            // 计算分页
+            // 计算分页 - 基于所有卡片，而不是唯一品种
             const totalPages = Math.ceil(filteredVarieties.length / itemsPerPage);
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = Math.min(startIndex + itemsPerPage, filteredVarieties.length);
-            const currentPlants = filteredVarieties.slice(startIndex, endIndex);
+            currentPageVarieties = filteredVarieties.slice(startIndex, endIndex);
             
-            if (currentPlants.length === 0) {
+            if (currentPageVarieties.length === 0) {
                 container.innerHTML = '<div class="no-results"><p>没有找到符合条件的品种</p></div>';
+                updateResultsCount(); // 更新计数显示
                 return;
             }
             
-            // 渲染当前页的植物
-            currentPlants.forEach(plant => {
+            // 渲染当前页的植物 - 显示所有卡片
+            currentPageVarieties.forEach(plant => {
                 container.appendChild(createPlantCard(plant));
             });
+            
+            // 更新计数显示
+            updateResultsCount();
             
             // 渲染分页控件
             if (totalPages > 1) {
@@ -9580,8 +9584,8 @@
                     <div class="data-section">
                         <h4>花朵信息</h4>
                         <div class="data-row">
-                            <span class="data-label">花色:</span>
-                            <span class="data-value">${plant.outerLobeColor}</span>
+                            <span class="data-label">香味:</span>
+                            <span class="data-value">${plant.hasFragrance}</span>
                         </div>
                         <div class="data-row">
                             <span class="data-label">花期:</span>
@@ -9776,7 +9780,7 @@
             document.getElementById('detail-modal').style.display = 'none';
         }
 
-        // 渲染分页控件
+        // 渲染分页控件 - 只显示5个页码
         function renderPagination(totalPages) {
             const pagination = document.getElementById('pagination');
             
@@ -9791,8 +9795,17 @@
                 pagination.appendChild(prevButton);
             }
             
+            // 计算显示的页码范围
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            // 调整起始页码，确保显示5个页码
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            
             // 页码按钮
-            for (let i = 1; i <= totalPages; i++) {
+            for (let i = startPage; i <= endPage; i++) {
                 const pageButton = document.createElement('button');
                 pageButton.textContent = i;
                 pageButton.classList.toggle('active', i === currentPage);
